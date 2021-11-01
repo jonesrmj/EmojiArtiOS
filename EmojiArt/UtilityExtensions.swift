@@ -105,3 +105,46 @@ extension Array where Element == NSItemProvider {
     loadObjects(ofType: theType, firstOnly: true, using: load)
   }
 }
+
+// extracting the actual url to an image from a url that might contain other info
+// (essentially looking for the imgurl key)
+// imgurl is a "well known" key that can be embedded in a url that says what the actual image url is
+
+extension URL {
+  var imageURL: URL {
+    for query in query?.components(separatedBy: "&") ?? [] {
+      let queryComponents = query.components(separatedBy: "=")
+      if queryComponents.count == 2 {
+        if queryComponents[0] == "imgurl", let url = URL(string: queryComponents[1].removingPercentEncoding ?? "") {
+          return url
+        }
+      }
+    }
+    return baseURL ?? self
+  }
+}
+
+// convenience functions for adding/subtracting CGPoints and CGSizes
+// might come in handy when doing gesture handling
+// because we do a lot of converting between coordinate systems and such
+// notice that type types of the lhs and rhs arguments vary below
+// thus you can offset a CGPoint by the width and height of a CGSize, for example
+
+extension CGSize {
+  // the center of an area that is our size
+  var center: CGPoint {
+    CGPoint(x: width/2, y: height/2)
+  }
+  static func +(lhs: Self, rhs: Self) -> CGSize {
+    CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
+  }
+  static func -(lhs: Self, rhs: Self) -> CGSize {
+    CGSize(width: lhs.width - rhs.width, height: lhs.height - rhs.height)
+  }
+  static func *(lhs: Self, rhs: CGFloat) -> CGSize {
+    CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
+  }
+  static func /(lhs: Self, rhs: CGFloat) -> CGSize {
+    CGSize(width: lhs.width / rhs, height: lhs.height / rhs)
+  }
+}
