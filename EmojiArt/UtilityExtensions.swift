@@ -32,6 +32,31 @@ extension Collection where Element: Identifiable {
 // (since any Published var or subscripts on that var)
 // (or subscripts on vars on that var, etc.)
 
+extension RangeReplaceableCollection where Element: Identifiable {
+  mutating func remove(_ element: Element) {
+    if let index = index(matching: element) {
+      remove(at: index)
+    }
+  }
+  
+  subscript(_ element: Element) -> Element {
+    get {
+      if let index = index(matching: element) {
+        return self[index]
+      } else {
+        return element
+      }
+    }
+    set {
+      if let index = index(matching: element) {
+        replaceSubrange(index...index, with: [newValue])
+      }
+    }
+  }
+}
+
+// if you use a Set to represent the selection of emoji in HW5
+
 // might come in handy when doing gesture handling
 // because we do a lot of converting between coordinate systems and such
 // notice that type types of the lhs and rhs arguments vary below
