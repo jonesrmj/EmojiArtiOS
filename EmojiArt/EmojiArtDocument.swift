@@ -41,7 +41,7 @@ class EmojiArtDocument: ReferenceFileDocument {
       }
     }
   }
-    
+  
   init() {
     emojiArt = EmojiArtModel()
   }
@@ -83,13 +83,12 @@ class EmojiArtDocument: ReferenceFileDocument {
       break
     }
   }
-    
+  
   // MARK: - Intent(s)
   
   func setBackground(_ background: EmojiArtModel.Background, undoManager: UndoManager?) {
-    undoablyPerform(operation: "Set Background", with: undoManager){
+    undoablyPerform(operation: "Set Background", with: undoManager) {
       emojiArt.background = background
-      print("background set to \(background)")
     }
   }
   
@@ -109,7 +108,7 @@ class EmojiArtDocument: ReferenceFileDocument {
   }
   
   func scaleEmoji(_ emoji: EmojiArtModel.Emoji, by scale: CGFloat, undoManager: UndoManager?) {
-    if let index = emojis.index(matching: emoji) {
+    if let index = emojiArt.emojis.index(matching: emoji) {
       undoablyPerform(operation: "Scale", with: undoManager) {
         emojiArt.emojis[index].size = Int((CGFloat(emojiArt.emojis[index].size) * scale).rounded(.toNearestOrAwayFromZero))
       }
